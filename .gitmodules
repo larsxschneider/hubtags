@@ -1,0 +1,3 @@
+[submodule "3rdParty/ctags.js"]
+	path = 3rdParty/ctags.js
+	url = git@github.com:larsxschneider/ctags.js.git

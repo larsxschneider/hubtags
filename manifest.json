@@ -1,0 +1,24 @@
+{
+  "name": "hubTags",
+  "version": "0.1.0",
+  "description": "ctags for GitHub",
+  "homepage_url": "https://github.com/larsxschneider/hubtags",
+  "background": { "scripts": ["background.js"] },
+  "content_scripts" : [
+    {
+      "matches" : [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js" : ["3rdParty/ctags.js/ctags.js", "3rdParty/jQuery/jquery.min.js", "contentscript.js"],
+      "run_at" : "document_idle",
+      "all_frames" : false
+    }
+  ],
+  "permissions": ["storage", "unlimitedStorage", "tabs"],
+  "icons" : {
+    "48" : "icon-48.png",
+    "128" : "icon-128.png"
+  },
+  "manifest_version": 2
+}
