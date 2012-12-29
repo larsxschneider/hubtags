@@ -125,7 +125,6 @@ function updateGithubSourceCodeLines() {
 
         if (links)
         {
-          // TODO: pick the best link here!
           var blobFileURL = bestBlobURLForCtag(getRawFileURL(), links);
 
           $(this).html('<a style="color: inherit;" href="' + blobFileURL +'">' + $(this).html() + '</a>');
@@ -154,7 +153,6 @@ function initCtags() {
       current_ctags[name] = tagArray = [];
     }
 
-    // Check if the 
     var index;
     if (tagArray.some(function (tag, i) { index = i; return tag[0] === sourceFile; })) {
       if (tagArray[index][1] !== lineNumber) {
