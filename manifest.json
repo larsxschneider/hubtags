@@ -17,8 +17,8 @@
   ],
   "permissions": ["storage", "unlimitedStorage", "tabs"],
   "icons" : {
-    "48" : "icon-48.png",
-    "128" : "icon-128.png"
+    "48" : "Assets/icon-48.png",
+    "128" : "Assets/icon-128.png"
   },
   "manifest_version": 2
 }
