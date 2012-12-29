@@ -2,6 +2,8 @@
 
 ctags for GitHub
 
+Get the app from the [Chrome Web Store](https://chrome.google.com/webstore/detail/hubtags/dbbnniijpbedlodofdlhjkgbhfelhbdp)
+
 ## Usage
 
 Visit GitHub source code pages, hover over symbols, click symbols :-)
