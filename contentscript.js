@@ -74,8 +74,6 @@ function equalCount(a, b) {
 
 
 function bestBlobURLForCtag(rawSourceFile, links) {
-  
-  console.log(rawSourceFile, links);
 
   var rawSourceFileMaster = getRawFileMastBranchURL(rawSourceFile);
   var bestLink = links[0];
