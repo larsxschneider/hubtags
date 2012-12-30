@@ -18,8 +18,8 @@
   "permissions": [
     "storage", 
     "unlimitedStorage", 
-    "tabs",                     // Required to detect GitHub URL changes
-    "https://raw.github.com/"], // Required for testing
+    "tabs",
+    "https://raw.github.com/"],
   "icons" : {
     "48" : "Assets/icon-48.png",
     "128" : "Assets/icon-128.png"
