@@ -58,24 +58,25 @@ function ctagsLanguageKey(language) {
 }
 
 
-function saveCtags(lang, ctags) {
+function saveCtags(lang, ctags, callback) {
   var langKey = ctagsLanguageKey(lang);
-  
   var obj= {};
   obj[langKey] = ctags;
-
   chrome.storage.local.set(obj, function() {
     log('Ctags saved: ' + lang);
+    updateGithubSourceCodeLines();
+    callback(obj);
   });
 }
 
 
 function loadCtags(lang, callback) {
   var langKey = ctagsLanguageKey(lang);
-  chrome.storage.local.get(lang, function(value) {
+  chrome.storage.local.get(langKey, function(value) {
     if (value && value[langKey]) {
       log('Ctags loaded: ' + lang);
       callback(value[langKey]);
+      updateGithubSourceCodeLines();
     } else {
       callback({});
     }
@@ -132,15 +133,22 @@ var current_ctags = {};
 
 
 function updateGithubSourceCodeLines() {
+  // Reset source code lines that have no <a> ctags links, yet 
+  $('.line span').map(function() {
+    if ($(this).children().length)
+      $(this).data('ctagsApplied', false);
+  });
+
   $('.line span').live('mouseover', function() {
       if (!$(this).data('ctagsApplied')) {
 
+        log('Checking tags for: ' + this.innerText);
         var links = current_ctags[this.innerText];
 
         if (links)
         {
+          log(links.length + ' tags found.');
           var blobFileURL = bestBlobURLForCtag(getRawFileURL(window.location.href), links);
-
           $(this).html('<a style="color: inherit;" href="' + blobFileURL +'">' + $(this).html() + '</a>');
         }
 
@@ -151,7 +159,25 @@ function updateGithubSourceCodeLines() {
 }
 
 
-function initCtags() {
+function updateCtags(blobFileURL) {
+  // Read language of current file
+  var currentRawFileURL = getRawFileURL(blobFileURL);
+  current_language = Module['CTags_getLanguage'](currentRawFileURL);
+  log('Language detected: ' + current_language);
+
+  if (current_language && current_language != 'unknown') {
+    loadCtags(current_language, function(loadedTags) {
+      current_ctags = loadedTags;
+
+      generateCtags(currentRawFileURL);
+    });    
+  } else {
+    log('Unknown language: ' + currentRawFileURL);
+  }
+}
+
+
+function initCtags(saveCtagsCallback) {
 
   // Add callback for new found ctags
   Module['CTags_setOnTagEntry'](function(name, kind, lineNumber, sourceFile, language) {
@@ -180,28 +206,8 @@ function initCtags() {
   });
 
   Module['CTags_setOnParsingCompleted'](function(sourceFile) {
-    saveCtags(current_language, current_ctags);
-
-    // Reset source code lines that have no <a> ctags links, yet 
-    $('.line span').map(function() {
-      if ($(this).children().length)
-        $(this).data('ctagsApplied', false);
-    });
+    saveCtags(current_language, current_ctags, saveCtagsCallback);
   });
-
-  // Read language of current file
-  var currentRawFileURL = getRawFileURL(window.location.href);
-  current_language = Module['CTags_getLanguage'](currentRawFileURL);
-  log('Language detected: ' + current_language);
-
-  if (current_language && current_language != 'unknown') {
-    loadCtags(current_language, function(loadedTags) {
-      current_ctags = loadedTags;
-      generateCtags(currentRawFileURL);
-    });    
-  } else {
-    log('Unknown language: ' + currentRawFileURL);
-  }
 }
 
 
@@ -209,6 +215,6 @@ chrome.extension.onRequest.addListener(function(request, sender, callback)
 {
   if (isBlobPage() && isGithubSite()) {
     initCtags();
-    updateGithubSourceCodeLines();
+    updateCtags(window.location.href);
   }    
 });
