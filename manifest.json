@@ -1,6 +1,6 @@
 {
   "name": "hubTags",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "ctags for GitHub",
   "homepage_url": "https://github.com/larsxschneider/hubtags",
   "background": { "scripts": ["background.js"] },
