@@ -1,19 +1,33 @@
-test('Check blob URL generation', function() {
-
-  var rawURL = 'https://raw.github.com/larsxschneider/ctags.js/master/Source/pre.js'
- 
+test('getBlobFileURL', function() {
   equal(
-    getBlobFileURL(rawURL, 13),
-    'https://github.com/larsxschneider/ctags.js/blob/master/Source/pre.js#L13',
-    'GitHub blob URL is wrong');
+    getBlobFileURL('https://raw.github.com/larsxschneider/ctags.js/master/Source/pre.js', 13),
+    'https://github.com/larsxschneider/ctags.js/blob/master/Source/pre.js#L13');
+
+  equal(
+    getBlobFileURL('https://git.autodesk.com/schneil/AIM360Viewer/raw/d1ce5aed0b4b18c320a4ba1226a9125d11524898/Source/Common/AIM360ViewerApp.cpp', 13),
+    'https://git.autodesk.com/schneil/AIM360Viewer/blob/d1ce5aed0b4b18c320a4ba1226a9125d11524898/Source/Common/AIM360ViewerApp.cpp#L13');
 });
 
 
-test('Check master branch file', function() {
+test('getRawFileMasterBranchURL', function() {
   equal(
-    getRawFileMastBranchURL('https://raw.github.com/larsxschneider/ctags.js/somebranch/Source/ctags-js.c'),
-    'https://raw.github.com/larsxschneider/ctags.js/master/Source/ctags-js.c'
-  );
+    getRawFileMasterBranchURL('https://raw.github.com/larsxschneider/ctags.js/somebranch/Source/ctags-js.c'),
+    'https://raw.github.com/larsxschneider/ctags.js/master/Source/ctags-js.c');
+
+  equal(
+    getRawFileMasterBranchURL('https://git.autodesk.com/schneil/AIM360Viewer/raw/somebranch/Source/Common/AIM360ViewerApp.cpp'),
+    'https://git.autodesk.com/schneil/AIM360Viewer/raw/master/Source/Common/AIM360ViewerApp.cpp');
+});
+
+
+test('getRawFileURL', function() {
+  equal(
+    getRawFileURL('https://github.com/loarabia/Clang-tutorial/blob/master/CIrewriter.cpp'),
+    'https://raw.github.com/loarabia/Clang-tutorial/master/CIrewriter.cpp');
+
+  equal(
+    getRawFileURL('https://git.autodesk.com/schneil/AIM360Viewer/blob/master/Source/Common/AIM360ViewerApp.cpp'),
+    'https://git.autodesk.com/schneil/AIM360Viewer/raw/master/Source/Common/AIM360ViewerApp.cpp');
 });
 
 

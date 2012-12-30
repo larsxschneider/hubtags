@@ -6,7 +6,8 @@ function log(message) {
 // Detect a github page. I use this method instead of an URL check to support github enterprise
 // instances.
 function isGithubSite() {
-  return $('meta[property="og:site_name"]').attr('content') === 'GitHub';
+  return window.location.hostname === 'github.com' || 
+         $('meta[property="og:site_name"]').attr('content') === 'GitHub';
 }
 
 
@@ -16,22 +17,37 @@ function isBlobPage() {
 }
 
 
-function getRawFileURL() {
-  return window.location.origin.replace('://', '://raw.') + window.location.pathname.replace('/blob', '');
+// Returns `true` if the URL points to `github.com`. Value `false` is interpreted as github enterprise instance.
+function isGithubComURL(href) {
+  return href.match(/^http[s]?\:\/\/(raw\.)?github.com\//);
 }
 
 
-function getRawFileMastBranchURL(rawFileURL) {
-  return rawFileURL.replace(/^(http[s]?\:\/\/raw\.([-A-Za-z0-9_.]+\/){3})([-A-Za-z0-9_.]+)([-A-Za-z0-9_./]+)/,
-    function(match, protocolServerUserFork, _notused_, branch, path) {
-      return protocolServerUserFork + 'master' + path;
+function getRawFileURL(href) {
+  return href.replace(/^(http[s]?\:\/\/)(([-A-Za-z0-9_.]+\/){3})blob\/([-A-Za-z0-9_./]+)/,
+    function(match, protocol, serverUserFork, _, branchPath) {
+      if (isGithubComURL(href))
+        return protocol + 'raw.' + serverUserFork + branchPath;
+      else
+        return protocol + serverUserFork + 'raw/' + branchPath;
+  }) 
+}
+
+
+function getRawFileMasterBranchURL(rawFileURL) {
+  return rawFileURL.replace(/^(http[s]?\:\/\/([-A-Za-z0-9_.]+\/){3})(raw\/)?([-A-Za-z0-9_.]+)([-A-Za-z0-9_./]+)/,
+    function(match, protocolServerUserFork, _, _, branch, path) {
+      if (isGithubComURL(rawFileURL))
+        return protocolServerUserFork + 'master' + path;
+      else
+        return protocolServerUserFork + 'raw/master' + path;
     });
 }
 
 
 function getBlobFileURL(rawFileURL, lineNumber) {
-  return rawFileURL.replace(/^(http[s]?\:\/\/)raw\.(([-A-Za-z0-9_.]+\/){3})([-A-Za-z0-9_./]+)/,
-    function(match, protocol, serverUserFork, _notused_, branchPath) {
+  return rawFileURL.replace(/^(http[s]?\:\/\/)(raw\.)?(([-A-Za-z0-9_.]+\/){3})(raw\/)?([-A-Za-z0-9_./]+)/,
+    function(match, protocol, _, serverUserFork, _, _,branchPath) {
       return protocol + serverUserFork + 'blob/' + branchPath;
     }) + '#L' + lineNumber;
 }
@@ -75,7 +91,7 @@ function equalCount(a, b) {
 
 function bestBlobURLForCtag(rawSourceFile, links) {
 
-  var rawSourceFileMaster = getRawFileMastBranchURL(rawSourceFile);
+  var rawSourceFileMaster = getRawFileMasterBranchURL(rawSourceFile);
   var bestLink = links[0];
   var bestLinkEquality = equalCount(bestLink[0], rawSourceFile);
   var abort = false;
@@ -123,7 +139,7 @@ function updateGithubSourceCodeLines() {
 
         if (links)
         {
-          var blobFileURL = bestBlobURLForCtag(getRawFileURL(), links);
+          var blobFileURL = bestBlobURLForCtag(getRawFileURL(window.location.href), links);
 
           $(this).html('<a style="color: inherit;" href="' + blobFileURL +'">' + $(this).html() + '</a>');
         }
@@ -174,7 +190,7 @@ function initCtags() {
   });
 
   // Read language of current file
-  var currentRawFileURL = getRawFileURL();
+  var currentRawFileURL = getRawFileURL(window.location.href);
   current_language = Module['CTags_getLanguage'](currentRawFileURL);
   log('Language detected: ' + current_language);
 
