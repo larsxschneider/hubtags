@@ -14,6 +14,7 @@ Browse GitHub source code files, hover over symbols and click them :-)
 - create tags for an entire project/fork
 - add default tags for popular/build in functions
 - add http://cscope.sourceforge.net/
+- browser UI to search in local tag database
 - ...
 
 
