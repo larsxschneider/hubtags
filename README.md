@@ -1,12 +1,22 @@
 # hubTags
 
-ctags for GitHub
+ctags for GitHub. Get the Chrome Extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/hubtags/dbbnniijpbedlodofdlhjkgbhfelhbdp)
 
-Get the app from the [Chrome Web Store](https://chrome.google.com/webstore/detail/hubtags/dbbnniijpbedlodofdlhjkgbhfelhbdp)
 
 ## Usage
 
-Visit GitHub source code pages, hover over symbols, click symbols :-)
+Browse GitHub source code files, hover over symbols and click them :-)
+
+
+## ToDo
+
+- show some UI if a tag is found more than once in a file (right now only the last occurence is saved)
+- create tags for an entire project/fork
+- add default tags for popular/build in functions
+- add http://cscope.sourceforge.net/
+- browser UI to search in local tag database
+- ...
+
 
 ## Contact
 
