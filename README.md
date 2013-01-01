@@ -11,9 +11,11 @@ Browse GitHub source code files, hover over symbols and click them :-)
 ## ToDo
 
 - show some UI if a tag is found more than once in a file (right now only the last occurence is saved)
-- create tags for an entire project/fork
+- create tags for an entire project/fork (could be done with a tree request via github api)
+- read tags from a 'tags' branch
 - add default tags for popular/build in functions
 - add http://cscope.sourceforge.net/
+- use https://github.com/mozilla/doctorjs for JS
 - browser UI to search in local tag database
 - ...
 
